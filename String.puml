@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/class-diagram
+set namespaceSeparator ::
+class _24FSI1::String {
+-str: char *
+-length: int
+-getStringLength(str: char const *): int
+-addiere(str1: String, str2: String): String
+-- Konstruktoren und Destruktoren --
++String()
++String(str: char *)
++~String
+-- Operatoren --
++operator=(str: char *): void
++operator+(str: char *): String
++operator+=()
++operator[](i: int): char
+-- Vergleichende Operatoren --
++operator==(z: String &): bool
++operator<(z: String &): bool
++operator>(z: String &): bool
+-- Funktionen --
++Length(): int
++toLower(): String
++toUpper(): String
+-- Friends --
++operator<<(std::ostream & os, String const & str) : std::ostream&
++operator>>(std::istream & is, String & str) : std::istream&
+}
+
+}
+@enduml

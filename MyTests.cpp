@@ -63,3 +63,24 @@ TEST(Strings, Adddiere_String_String) {
     _24FSI1::String c = a + b;
     EXPECT_EQ(c, "MariaMarianne");
 }
+
+TEST(Strings, ConCat_String_Char) {
+    _24FSI1::String a("Maria");
+    char b = 'M';
+    a += b;
+    EXPECT_EQ(a, "MariaM");
+}
+
+TEST(Strings, ConCat_String_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Marianne";
+    a += b;
+    EXPECT_EQ(a, "MariaMarianne");
+}
+
+TEST(Strings, ConCat_String_String) {
+    _24FSI1::String a("Maria");
+    _24FSI1::String b("Marianne");
+    a += b;
+    EXPECT_EQ(a, "MariaMarianne");
+}

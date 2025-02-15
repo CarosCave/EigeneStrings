@@ -10,39 +10,48 @@ private:
     int length;
 
     int static getStringLength(char const * str);
-    String addiere(String const & str1, String const & str2) const;
+    [[nodiscard]] String addiere(String const & str1, String const & str2) const;
+    String & plusGleich(String const & str);
+
 
 public:
     // Konstruktoren und Destruktoren
     String();
     // Standardkonstruktor
-    /// Erlaub implizierte Typkonvertierungen
-    /// für String s = "Test";
-    /// oder String t("Test");
-    ///
+    // Erlaub implizierte Typkonvertierungen
+    // für String s = "Test";
+    // oder String t("Test");
     String(char const * str);
-    //String(char const * str);
-    // String(String const &);
-    //~String();
+
+    // Konstruktor baut aus einzelnem Char ein String
+    String(char const c);
+
+    ~String();
 
     // Operatoren
     void operator=(char const * str);
-    String operator+(char const str) const;
-    String operator+(char const & c) const;
+
+    // Operator+
+    String operator+(char c) const;
+    String operator+(char const * c) const;
     String operator+(String const & str) const;
-    // void operator+=();
+
+    // Operator+=
+    String & operator+=(char c);
+    String & operator+=(char const * c);
+    String & operator+=(String const & str);
 
     // void operator<<();
     // void operator>>();
-    char operator[](int const stelle);
+    char operator[](int stelle) const;
 
+    // Vergleicher
     bool operator==(String const & z) const;
     bool operator<(String const & z) const;
     bool operator>(String const & z) const;
 
     // Methoden
 
-    void printOn(std::ostream & os) const;
     String toLower() const;
     String toUpper() const;
     // char toChar;
@@ -54,6 +63,7 @@ public:
     }
 
     friend std::ostream & operator<<(std::ostream & os, String const & str);
+    friend std::istream & operator>>(std::istream & is, String & str);
 };
 
 

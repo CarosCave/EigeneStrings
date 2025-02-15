@@ -1,5 +1,7 @@
 #include "Include/String.h"
 
+#include <string.h>
+
 namespace _24FSI1 {
 
     // Konstruktoren
@@ -22,6 +24,21 @@ namespace _24FSI1 {
         this->str[length] = '\0';
     }
 
+    // Legt String aus einem einzelnen Char an.
+    String::String(char const c) {
+        str = new char[2];
+        str[0] = c;
+        str[1] = '\0';
+        length = 1;
+    }
+
+    // Destruktor, löscht die Daten und gibt den Speicher wieder frei.
+    // Da ich mit new Speicher alloziiere, muss ich
+    // zwingend den Heap mit delete[] zurückgeben.
+    String::~String() {
+        delete[] str;
+    }
+
     // Operatoren
     void String::operator=(char const * str) {
         length = getStringLength(str);
@@ -32,57 +49,55 @@ namespace _24FSI1 {
         this->str[length] = '\0';
     }
 
+    // region Operator+
     // Addiere String + Char
     String String::operator+(char const c) const {
-        String tStr;
-        tStr.str[0] = c;
+        String tStr(c);
 
-        return addiere(str, tStr.str);
+        return addiere(this->str, tStr);
     }
 
     // Addiere String + Char[]
-    String String::operator+(char const & c) const {
-        // String tStr(str);
-        //
-        // tStr.length = this->length + getStringLength(str);
-        //
-        // tStr.str = new char[tStr.length + 1];
-        // //delete[] tStr.str;
-        // // Erst wird der erste String in den neuen String übertragen
-        // for (int i = 0; i <length; i++) {
-        //     tStr.str[i] = this->str[i];
-        // }
-        // // Anschließend wird der zweite String direkt hinten angehangen
-        // for (int i = length; i < tStr.length; i++) {
-        //     tStr.str[i] = str[i - length];
-        // }
-        // tStr.str[tStr.length] = '\0';
+    String String::operator+(char const * c) const {
+        String tStr(c);
 
+        return addiere(this->str, tStr);
+    }
 
+    // Addiere String + String
+    String String::operator+(String const & str) const {
         return addiere(this->str, str);
     }
 
-    String String::addiere(String const & str1, String const & str2) const {
-        String tStr;
-        tStr.length = str1.length + str2.length;
-        tStr.str = new char[tStr.length + 1];
-        // Erst wird der erste String in den neuen String übertragen
-        for (int i = 0; i <length; i++) {
-            tStr.str[i] = this->str[i];
-        }
-        // Anschließend wird der zweite String direkt hinten angehangen
-        for (int i = length; i < tStr.length; i++) {
-            tStr.str[i] = str[i - length];
-        }
-        tStr.str[tStr.length] = '\0';
-        return tStr;
+    // endregion Operator+
+
+    // region Operator+=
+    // Addiere String += Char
+    String & String::operator+=(char const c) {
+        // Aufrufen des Konstruktors für ein einzelnes Char
+        String tStr(c);
+
+        return plusGleich(tStr);
     }
 
-    String String::operator+(String const & str) const {
-        String tStr;
+    // Addiere String += Char-Array
+    String & String::operator+=(char const * c) {
+        // Aufrufen des Konstruktors für ein Char-Array
+        String tStr(c);
+
+        return plusGleich(tStr);
     }
 
+    // Addiere String += String
+    String & String::operator+=(String const & str) {
+        return plusGleich(str);
+    }
+
+    // endregion Operator+=
+
+    // region Private Klassenfunktionen
     // Gibt die Länge des ursprünglichen Char-Arrays zurück
+    // Dry-Prinzip (Don't repeat yourself)
     int String::getStringLength(char const * str) {
         int tLength = 0;
         for (int i = 0; str[i] != '\0'; i++) {
@@ -91,7 +106,49 @@ namespace _24FSI1 {
         return tLength;
     }
 
-    char String::operator[](int const stelle) {
+    // Eigentliches Addieren ausgelagert.
+    // Dry-Prinzip (Don't repeat yourself)
+    String String::addiere(String const & str1, String const & str2) const {
+        String tStr;
+
+        tStr.length = str1.length + str2.length;
+        tStr.str = new char[tStr.length + 1];
+        memset(tStr.str, 0, tStr.length + 1);
+
+        // Erst wird der erste String in den neuen String übertragen
+        for (int i = 0; i < str1.length; i++) {
+            tStr.str[i] = str1.str[i];
+        }
+        // Anschließend wird der zweite String direkt hinten angehangen
+        for (int i = 0; i < str2.length; i++) {
+            tStr.str[i + str1.length] = str2.str[i];
+        }
+        tStr.str[tStr.length] = '\0';
+        return tStr;
+    }
+
+    // Plus Gleich ausgelagert
+    // Dry-Prinzip (Don't repeat yourself)
+    String & String::plusGleich(String const & str) {
+        String temp = addiere(this->str, str);
+        // Löschen des Speichers
+        delete[] this->str;
+        // Übertragen des neuen Speichers
+        this->str = temp.str;
+        this->length = temp.length;
+
+        // Setze den Temp-String auf NULL,
+        // damit sichergestellt wird, dass der
+        // Destruktor nicht versucht erneut freizugeben.
+        temp.str = nullptr;
+        temp.length = 0;
+
+        return *this;
+    }
+
+    // endregion Private Klassenfunktionen
+
+    char String::operator[](int const stelle) const {
         if (stelle >= 0 && stelle <= length) {
             return str[stelle];
         }
@@ -100,6 +157,7 @@ namespace _24FSI1 {
         }
     }
 
+    // region Vergleicher
     bool String::operator==(String const & z) const{
         // Direkter Abbruch, wenn die Länge
         // der Strings unterschiedlich ist.
@@ -156,7 +214,7 @@ namespace _24FSI1 {
         // entscheidet die Länge des Strings.
         return s1.length > s2.length;
     }
-
+    // endregion Vergleicher
 
     // Klassen-Methoden
 
@@ -205,25 +263,8 @@ namespace _24FSI1 {
         return os;
     }
 
+    // Liest von der Konsole ein
+    std::istream & operator>>(std::istream & os, String & str) {
+
+    }
 } // _24FSI1
-
-// Löschen
-// std::ostream & operator<<(std::ostream & os, String const & z) {
-//     z.printOn(os);
-//     return os;
-// }
-
-// void String::printOn(std::ostream & os) const {
-//     os << str;
-// }
-
-// Copy-Konstruktor
-// String::String(String const & z){
-//     length = z.length;
-//     str = z.str;
-// }
-
-// Destruktor, löscht die Daten und gibt den Speicher wieder frei.
-// String::~String() {
-//     delete[] str;
-// }

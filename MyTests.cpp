@@ -1,4 +1,5 @@
 #include "Include/String.h"
+#include <iostream>
 #include "gtest/gtest.h"
 
 
@@ -83,4 +84,22 @@ TEST(Strings, ConCat_String_String) {
     _24FSI1::String b("Marianne");
     a += b;
     EXPECT_EQ(a, "MariaMarianne");
+}
+
+TEST(Console, Output) {
+    // Beginne mit dem Erfassen der Konsolenausgabe
+    ::testing::internal::CaptureStdout();
+
+    _24FSI1::String a("Maria");
+    std::cout << a << std::endl;
+
+    // Beende die Erfassung und speichere die Ausgabe
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output, "Maria\n");
+}
+
+TEST(Console, Input_String) {
+    // Beginne mit dem Erfassen der Konsoleneingabe
+    //::testing::internal::
 }

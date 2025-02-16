@@ -16,8 +16,9 @@ private:
 
 public:
     // Konstruktoren und Destruktoren
-    String();
     // Standardkonstruktor
+    String();
+
     // Erlaub implizierte Typkonvertierungen
     // für String s = "Test";
     // oder String t("Test");
@@ -26,6 +27,7 @@ public:
     // Konstruktor baut aus einzelnem Char ein String
     String(char const c);
 
+    // Destruktor
     ~String();
 
     // Operatoren

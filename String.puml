@@ -4,10 +4,13 @@ set namespaceSeparator ::
 class _24FSI1::String {
 -str: char *
 -length: int
+-- Interne Funktionen --
 -getStringLength(str: char const *): int
 -addiere(str1: String, str2: String): String
+-plusGleich(str: String &): String
 -- Konstruktoren und Destruktoren --
 +String()
++String(c: char)
 +String(str: char *)
 +~String
 -- Operatoren --

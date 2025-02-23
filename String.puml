@@ -8,28 +8,39 @@ class _24FSI1::String {
 -getStringLength(str: char const *): int
 -addiere(str1: String, str2: String): String
 -plusGleich(str: String &): String
+-memset(str: String &, start: int, length, int): void
 -- Konstruktoren und Destruktoren --
 +String()
 +String(c: char)
 +String(str: char *)
 +~String
 -- Operatoren --
-+operator=(str: char *): void
-+operator+(str: char *): String
-+operator+=()
 +operator[](i: int): char
+-- Operatoren = --
++operator=(str: char): void
++operator=(str: char *): void
++operator=(str: String &): void
+-- Operatoren + --
++operator+(c: char): String
++operator+(str: char *): String
++operator+(str: String &): String
+-- Operatoren += --
++operator+=(c: char): String &
++operator+=(str: char *): String &
++operator+=(str: String &): String &
 -- Vergleichende Operatoren --
 +operator==(z: String &): bool
++operator!=(z: String &): bool
 +operator<(z: String &): bool
 +operator>(z: String &): bool
--- Funktionen --
+-- Methoden --
 +Length(): int
++c_str(): char *
 +toLower(): String
 +toUpper(): String
 -- Friends --
 +operator<<(std::ostream & os, String const & str) : std::ostream&
 +operator>>(std::istream & is, String & str) : std::istream&
 }
-
 }
 @enduml

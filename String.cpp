@@ -1,7 +1,5 @@
 #include "Include/String.h"
 
-#include <string.h>
-
 namespace _24FSI1 {
 
     // Konstruktoren
@@ -13,23 +11,31 @@ namespace _24FSI1 {
     // Legt String an und weisst ihm einen String zu
     String::String(char const * str): length(0) {
 
-        for (int i = 0; str[i] != '\0'; i++) {
-            length++;
-        }
+        length = getStringLength(str);
+
         this->str = new char[length + 1];
 
-        for (int i = 0; i <= length; i++) {
+        for (int i = 0; i < length; i++) {
             this->str[i] = str[i];
         }
         this->str[length] = '\0';
     }
 
     // Legt String aus einem einzelnen Char an.
-    String::String(char const c) {
-        str = new char[2];
+    String::String(char const c): str(new char[2]), length(1) {
+        //delete[] str;
+        //str = nullptr;
+        //operator=(c);
         str[0] = c;
         str[1] = '\0';
-        length = 1;
+    }
+
+    // Kopierkonstruktor
+    String::String(String const & str): length(str.length), str(new char[str.length + 1]) {
+        for (int i = 0; i < length; i++) {
+            this->str[i] = str.str[i];
+        }
+        this->str[length] = '\0';
     }
 
     // Destruktor, löscht die Daten und gibt den Speicher wieder frei.
@@ -40,7 +46,21 @@ namespace _24FSI1 {
     }
 
     // Operatoren
+    // #region Zuweisungsoperator
+    // String = Char
+    void String::operator=(char const c) {
+        if (str != nullptr) {
+            delete[] str;
+        }
+        str = new char[2];
+        str[0] = c;
+        length = 1;
+        str[1] = '\0';
+    }
+
+    // String = Char-Array
     void String::operator=(char const * str) {
+        delete[] this->str;
         length = getStringLength(str);
         this->str = new char[length + 1];
         for (int i = 0; i < length; i++) {
@@ -48,6 +68,19 @@ namespace _24FSI1 {
         }
         this->str[length] = '\0';
     }
+
+    // String = String
+    void String::operator=(String const & str) {
+        length = str.length;
+        delete[] this->str;
+        this->str = new char[length + 1];
+        for (int i = 0; i < length; i++) {
+            this->str[i] = str.str[i];
+        }
+        this->str[length] = '\0';
+    }
+
+    // #endregion Zuweisungsoperator
 
     // region Operator+
     // Addiere String + Char
@@ -108,12 +141,13 @@ namespace _24FSI1 {
 
     // Eigentliches Addieren ausgelagert.
     // Dry-Prinzip (Don't repeat yourself)
-    String String::addiere(String const & str1, String const & str2) const {
+    String String::addiere(String const & str1, String const & str2) {
         String tStr;
 
         tStr.length = str1.length + str2.length;
         tStr.str = new char[tStr.length + 1];
-        memset(tStr.str, 0, tStr.length + 1);
+
+        memset(tStr, 0, tStr.length + 1);
 
         // Erst wird der erste String in den neuen String übertragen
         for (int i = 0; i < str1.length; i++) {
@@ -130,9 +164,10 @@ namespace _24FSI1 {
     // Plus Gleich ausgelagert
     // Dry-Prinzip (Don't repeat yourself)
     String & String::plusGleich(String const & str) {
-        String temp = addiere(this->str, str);
+        String temp;
+        temp = addiere(this->str, str);
         // Löschen des Speichers
-        delete[] this->str;
+        //delete[] this->str;
         // Übertragen des neuen Speichers
         this->str = temp.str;
         this->length = temp.length;
@@ -144,6 +179,14 @@ namespace _24FSI1 {
         temp.length = 0;
 
         return *this;
+    }
+
+    // Eigenes Memset implementiert.
+    // Schreibt \0 in den angelegten Speicher
+    void String::memset(String const & newStr, int start, int length) {
+        for (int i = start; i < length + start; i++) {
+            newStr.str[i] = '\0';
+        }
     }
 
     // endregion Private Klassenfunktionen
@@ -177,6 +220,10 @@ namespace _24FSI1 {
         // sind beide Strings identisch und
         // es wird TRUE zurückgegeben.
         return true;
+    }
+
+    bool String::operator!=(String const & z) const {
+        return !(*this == z);
     }
 
     bool String::operator<(String const & z) const {
@@ -265,6 +312,6 @@ namespace _24FSI1 {
 
     // Liest von der Konsole ein
     std::istream & operator>>(std::istream & os, String & str) {
-
+        return os;
     }
 } // _24FSI1

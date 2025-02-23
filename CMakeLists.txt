@@ -8,6 +8,9 @@ add_executable(EigeneStrings main.cpp
         Include/String.h
         MyTests.cpp)
 
+# Extra Flags für Speicherfehler
+add_definitions(-pedantic)
+
 
 # Google-Test-Gelumpe
 include(FetchContent)

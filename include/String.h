@@ -9,10 +9,10 @@ private:
     char * str;
     int length;
 
-    int static getStringLength(char const * str);
-    [[nodiscard]] String addiere(String const & str1, String const & str2) const;
+    int getStringLength(char const * str);
+    String static addiere(String const & str1, String const & str2);
     String & plusGleich(String const & str);
-
+    void static memset(String const & str, int start, int length);
 
 public:
     // Konstruktoren und Destruktoren
@@ -27,11 +27,18 @@ public:
     // Konstruktor baut aus einzelnem Char ein String
     String(char const c);
 
+    // Kopierkonstruktor, stellt sicher, dass die Strings
+    // korrekt kopiert werden und es keine Speicherprobleme gibt
+    String(String const & str);
+
     // Destruktor
     ~String();
 
     // Operatoren
+    // Operator=
+    void operator=(char const c);
     void operator=(char const * str);
+    void operator=(String const & str);
 
     // Operator+
     String operator+(char c) const;
@@ -43,12 +50,11 @@ public:
     String & operator+=(char const * c);
     String & operator+=(String const & str);
 
-    // void operator<<();
-    // void operator>>();
     char operator[](int stelle) const;
 
     // Vergleicher
     bool operator==(String const & z) const;
+    bool operator!=(String const & z) const;
     bool operator<(String const & z) const;
     bool operator>(String const & z) const;
 
@@ -62,6 +68,11 @@ public:
     // Rückgabe der Stringlänge
     int Length() {
         return length;
+    }
+
+    // Rückgabe als Char-Array
+    [[nodiscard]] char * c_str() const {
+        return str;
     }
 
     friend std::ostream & operator<<(std::ostream & os, String const & str);

@@ -39,9 +39,36 @@ TEST(String_Manipulation, toUpper) {
     EXPECT_EQ(b, "MARIA");
 }
 
-TEST(Misc, GiveLength) {
+TEST(Misc, Give_Length) {
     _24FSI1::String a("Maria");
     EXPECT_EQ(a.Length(), 5);
+}
+
+TEST(Misc, Weise_Char_Array_Zu) {
+    _24FSI1::String a;
+    a = "Maria";
+    EXPECT_EQ(a, "Maria");
+}
+
+TEST(Misc, Weise_Char_Zu) {
+    _24FSI1::String a;
+    a = 'M';
+    EXPECT_EQ(a, 'M');
+}
+
+TEST(Misc, Weise_String_Zu) {
+    _24FSI1::String a("Maria");
+    _24FSI1::String b;
+    b = a;
+    EXPECT_EQ(b, "Maria");
+}
+
+TEST(Misc, Rückgabe_Char_Array) {
+    _24FSI1::String a("Maria");
+    const char *b = a.c_str();
+    char *c = a.c_str();
+    EXPECT_STREQ(b, "Maria");
+    EXPECT_STREQ(c, "Maria");
 }
 
 TEST(Strings, Addiere_String_Char) {
@@ -91,15 +118,15 @@ TEST(Console, Output) {
     ::testing::internal::CaptureStdout();
 
     _24FSI1::String a("Maria");
-    std::cout << a << std::endl;
+    std::cout << a;
 
     // Beende die Erfassung und speichere die Ausgabe
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output, "Maria\n");
+    EXPECT_EQ(output, "Maria");
 }
 
-TEST(Console, Input_String) {
-    // Beginne mit dem Erfassen der Konsoleneingabe
-    //::testing::internal::
-}
+// TEST(Console, Input_String) {
+//     // Beginne mit dem Erfassen der Konsoleneingabe
+//     //::testing::internal::
+// }

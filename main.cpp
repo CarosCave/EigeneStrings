@@ -3,9 +3,6 @@
 #include "gtest/gtest.h"
 
 
-
-using namespace _24FSI1;
-
 int main() {
     // Google-Test spezifisch
     ::testing::InitGoogleTest();

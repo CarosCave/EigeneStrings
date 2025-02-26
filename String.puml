@@ -4,43 +4,44 @@ set namespaceSeparator ::
 class _24FSI1::String {
 -str: char *
 -length: int
--- Interne Funktionen --
--getStringLength(str: char const *): int
--addiere(str1: String, str2: String): String
--plusGleich(str: String &): String
--memset(str: String &, start: int, length, int): void
+-- Interne Methoden --
+-getStringLength(NewStr: char const *): int
+-{static}addiere(NewStr1: String const &, NewStr2: String const &): String
+-plusGleich(NewStr: String &): String
+-memZero(): void
 -- Konstruktoren und Destruktoren --
 +String()
 +String(c: char)
-+String(str: char *)
++String(NewStr: char const *)
++String(NewString: String const &)
 +~String
 -- Operatoren --
 +operator[](i: int): char
 -- Operatoren = --
-+operator=(str: char): void
-+operator=(str: char *): void
-+operator=(str: String &): void
++operator=(c: char): void
++operator=(NewStr: char const *): void
++operator=(NewStr: String const &): void
 -- Operatoren + --
 +operator+(c: char): String
-+operator+(str: char *): String
-+operator+(str: String &): String
++operator+(NewStr: char const *): String
++operator+(NewStr: String const &): String
 -- Operatoren += --
 +operator+=(c: char): String &
-+operator+=(str: char *): String &
-+operator+=(str: String &): String &
++operator+=(NewStr: char const *): String &
++operator+=(NewStr: String const &): String &
 -- Vergleichende Operatoren --
-+operator==(z: String &): bool
-+operator!=(z: String &): bool
-+operator<(z: String &): bool
-+operator>(z: String &): bool
++operator==(NewStr: String const &): bool
++operator!=(NewStr: String const &): bool
++operator<(NewStr: String const &): bool
++operator>(NewStr: String const &): bool
 -- Methoden --
 +Length(): int
 +c_str(): char *
 +toLower(): String
 +toUpper(): String
 -- Friends --
-+operator<<(std::ostream & os, String const & str) : std::ostream&
-+operator>>(std::istream & is, String & str) : std::istream&
+{friend} operator<<(std::ostream & os, String const & NewStr) : std::ostream&
+{friend} operator>>(std::istream & is, String & NewStr) : std::istream&
 }
 }
 @enduml

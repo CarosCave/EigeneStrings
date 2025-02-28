@@ -126,7 +126,12 @@ TEST(Console, Output) {
     EXPECT_EQ(output, "Maria");
 }
 
-// TEST(Console, Input_String) {
-//     // Beginne mit dem Erfassen der Konsoleneingabe
-//     //::testing::internal::
-// }
+TEST(Console, Input_String) {
+     // Beginne mit dem Erfassen der Konsoleneingabe
+     std::istringstream iss("Maria");
+
+    _24FSI1::String a;
+     iss >> a;
+
+    EXPECT_EQ(a, "Maria");
+}

@@ -302,7 +302,21 @@ namespace _24FSI1 {
     }
 
     // Liest von der Konsole ein
-    std::istream & operator>>(std::istream & os, String & NewStr) {
-        return os;
+    std::istream & operator>>(std::istream & is, String & NewStr) {
+        char c;
+        int laufvariable = 0;
+        int laenge = 8;
+        char * tStr = new char[laenge];
+
+        while (is.get(c) && !std::isspace(c)) {
+            tStr[laufvariable] = c;
+            laufvariable++;
+        }
+        tStr[laufvariable] = '\0';
+
+        NewStr.str = tStr;
+        NewStr.length = laufvariable;
+
+        return is;
     }
 } // _24FSI1

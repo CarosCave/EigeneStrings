@@ -306,16 +306,36 @@ namespace _24FSI1 {
         char c;
         int laufvariable = 0;
         int laenge = 8;
+
         char * tStr = new char[laenge];
 
+        // Liest den Eingabestrom bis ungültige Zeichen laut isspace kommen
         while (is.get(c) && !std::isspace(c)) {
             tStr[laufvariable] = c;
             laufvariable++;
+
+            // Wenn die festgelegte Länge des Temp-Strings gleich
+            // der Laufvariablen sind, wird ein neues Array doppelter
+            // Größe erzeugt und die Daten werden umgeschrieben.
+            if (laufvariable == laenge) {
+                laenge *= 2;
+                char * tTemp = new char[laenge];
+                for (int i = 0; i < laufvariable; i++) {
+                    tTemp[i] = tStr[i];
+                }
+                delete[] tStr;
+                tStr = tTemp;
+            }
         }
+        // Terminieren des fertig eingelesenen Strings
         tStr[laufvariable] = '\0';
 
-        NewStr.str = tStr;
-        NewStr.length = laufvariable;
+        // Übergeben des eingelesenen Strings mittels des
+        // überladenen operator=(char const *)
+        NewStr = tStr;
+
+        // Freigeben des allocierten Speichers
+        delete[] tStr;
 
         return is;
     }

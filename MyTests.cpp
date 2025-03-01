@@ -126,7 +126,17 @@ TEST(Console, Output) {
     EXPECT_EQ(output, "Maria");
 }
 
-TEST(Console, Input_String) {
+TEST(Console, Input_Char) {
+    // Beginne mit dem Erfassen der Konsoleneingabe
+    std::istringstream iss("M");
+
+    _24FSI1::String a;
+    iss >> a;
+
+    EXPECT_EQ(a, "M");
+}
+
+TEST(Console, Input_String_Kleiner_8) {
      // Beginne mit dem Erfassen der Konsoleneingabe
      std::istringstream iss("Maria");
 
@@ -134,4 +144,14 @@ TEST(Console, Input_String) {
      iss >> a;
 
     EXPECT_EQ(a, "Maria");
+}
+
+TEST(Console, Input_String_Groesser_8) {
+    // Beginne mit dem Erfassen der Konsoleneingabe
+    std::istringstream iss("MariannenGraben");
+
+    _24FSI1::String a;
+    iss >> a;
+
+    EXPECT_EQ(a, "MariannenGraben");
 }

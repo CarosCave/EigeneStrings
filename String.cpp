@@ -23,9 +23,6 @@ namespace _24FSI1 {
 
     // Legt String aus einem einzelnen Char an.
     String::String(char const c): str(new char[2]), length(1) {
-        //delete[] str;
-        //str = nullptr;
-        //operator=(c);
         str[0] = c;
         str[1] = '\0';
     }

@@ -301,6 +301,8 @@ namespace _24FSI1 {
         return temp;
     }
 
+    // Wenn im String eine Integer Zahl gespeichert ist,
+    // dann wird diese als Integer ausgegeben.
     int String::toInt() const {
         int tInt = 0;
 

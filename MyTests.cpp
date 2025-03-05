@@ -185,3 +185,21 @@ TEST(Console, Input_String_Groesser_8) {
     EXPECT_EQ(a, "MariannenGraben");
 }
 
+TEST(Console, Input_Int) {
+    // Beginne mit dem Erfassen der Konsoleneingabe
+    std::istringstream iss("100");
+
+    _24FSI1::String a;
+    iss >> a;
+
+    EXPECT_EQ(a, "100");
+}
+
+TEST(Misc, Output_Int_100) {
+    _24FSI1::String a("100");
+
+    int b = a.toInt();
+
+    EXPECT_EQ(b, 100);
+}
+

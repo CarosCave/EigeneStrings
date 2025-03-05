@@ -7,3 +7,4 @@ Dabei sollen die Verkettung mit den Operatoren + und += (auch für C-Strings und
 Verwenden Sie zur Realisierung keinerlei fertige String-Klassen und begründen Sie jeweils Ihre Design-Entscheidungen.
 
 ## UML Klassendiagramm
+![StringUML.png](Pics/StringUML.png)

@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 
-TEST(Vergleichen, kleiner) {
+TEST(Vergleichen, Kleiner) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a < b, true);
@@ -11,7 +11,7 @@ TEST(Vergleichen, kleiner) {
     EXPECT_EQ(b < a, false);
 }
 
-TEST(Vergleichen, groesser) {
+TEST(Vergleichen, Groesser) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a > b, false);
@@ -19,12 +19,28 @@ TEST(Vergleichen, groesser) {
     EXPECT_EQ(b > a, true);
 }
 
-TEST(Vergleichen, gleich) {
+TEST(Vergleichen, Gleich) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Maria");
     _24FSI1::String c("Marianne");
     EXPECT_EQ(a == b, true);
     EXPECT_EQ(a == c, false);
+}
+
+TEST(Vergleichen, Kleiner_Gleich) {
+    _24FSI1::String a("Maria");
+    _24FSI1::String b("Marianne");
+    EXPECT_EQ(a <= b, true);
+    EXPECT_EQ(a <= a, true);
+    EXPECT_EQ(b <= a, false);
+}
+
+TEST(Vergleichen, Groesser_Gleich) {
+    _24FSI1::String a("Maria");
+    _24FSI1::String b("Marianne");
+    EXPECT_EQ(a >= b, false);
+    EXPECT_EQ(a >= a, true);
+    EXPECT_EQ(b >= a, true);
 }
 
 TEST(String_Manipulation, toLower) {

@@ -57,6 +57,8 @@ public:
     bool operator!=(String const & NewStr) const;
     bool operator<(String const & NewStr) const;
     bool operator>(String const & NewStr) const;
+    bool operator<=(String const & NewStr) const;
+    bool operator>=(String const & NewStr) const;
 
     // Methoden
 

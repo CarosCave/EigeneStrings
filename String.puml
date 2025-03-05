@@ -34,6 +34,8 @@ class _24FSI1::String {
 +operator!=(NewStr: String const &): bool
 +operator<(NewStr: String const &): bool
 +operator>(NewStr: String const &): bool
++operator<=(NewStr: String const &): bool
++operator>=(NewStr: String const &): bool
 -- Methoden --
 +Length(): int
 +c_str(): char *

@@ -263,6 +263,15 @@ namespace _24FSI1 {
         // entscheidet die Länge des Strings.
         return s1.length > s2.length;
     }
+
+    bool String::operator<=(String const & NewStr) const {
+        return !(*this > NewStr);
+    }
+
+    bool String::operator>=(String const & NewStr) const {
+        return !(*this < NewStr);
+    }
+
     // endregion Vergleicher
 
     // Klassen-Methoden

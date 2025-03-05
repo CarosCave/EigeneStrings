@@ -295,6 +295,15 @@ namespace _24FSI1 {
         return temp;
     }
 
+    int String::toInt() const {
+        int tInt = 0;
+
+        for (int i = 0; i < length; i++) {
+            tInt = tInt * 10 + str[i] - '0';
+        }
+        return tInt;
+    }
+
     // Gibt den String auf der Konsole aus.
     std::ostream & operator<<(std::ostream & os, String const & NewStr) {
         os << NewStr.str;

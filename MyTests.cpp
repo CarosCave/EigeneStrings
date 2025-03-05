@@ -71,6 +71,19 @@ TEST(Misc, Rückgabe_Char_Array) {
     EXPECT_STREQ(c, "Maria");
 }
 
+TEST(Misc, Rückgabe_Integer) {
+    _24FSI1::String a("100");
+    int b = a.toInt();
+    EXPECT_EQ(b, 100);
+}
+
+TEST(Misc, Rechnen_mit_zwei_Integer) {
+    _24FSI1::String a("100");
+    _24FSI1::String b("200");
+    int c = a.toInt() + b.toInt();
+    EXPECT_EQ(c, 300);
+}
+
 TEST(Strings, Addiere_String_Char) {
     _24FSI1::String a("Maria");
     char b = 'M';
@@ -155,3 +168,4 @@ TEST(Console, Input_String_Groesser_8) {
 
     EXPECT_EQ(a, "MariannenGraben");
 }
+

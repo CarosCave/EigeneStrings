@@ -62,6 +62,7 @@ public:
 
     String toLower() const;
     String toUpper() const;
+    int toInt() const;
 
     // Inline-Methoden
     // Rückgabe der Stringlänge

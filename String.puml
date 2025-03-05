@@ -13,7 +13,7 @@ class _24FSI1::String {
 +String()
 +String(c: char)
 +String(NewStr: char const *)
-+String(NewString: String const &)
++String(NewStr: String const &)
 +~String
 -- Operatoren --
 +operator[](i: int): char
@@ -39,6 +39,7 @@ class _24FSI1::String {
 +c_str(): char *
 +toLower(): String
 +toUpper(): String
++toInt(): int
 -- Friends --
 {friend} operator<<(std::ostream & os, String const & NewStr) : std::ostream&
 {friend} operator>>(std::istream & is, String & NewStr) : std::istream&

@@ -1,6 +1,87 @@
 #include "Include/String.h"
 #include <iostream>
 #include "gtest/gtest.h"
+#include <tuple>
+
+// Enum für die Vergleichsoperationen
+enum class VergleichsTyp {
+    Kleiner,
+    Groesser,
+    Gleich,
+    KleinerGleich,
+    GroesserGleich
+};
+
+
+// Test-Fixure mit Parametern
+class VergleichsTests : public ::testing::TestWithParam<std::tuple<std::string, std::string, VergleichsTyp, bool>> {
+};
+
+// Implementierung des Tests
+TEST_P(VergleichsTests, Vergleiche) {
+    auto [str1, str2, typ, erwartetes_ergebnis] = GetParam();
+
+    _24FSI1::String a(str1.c_str());
+    _24FSI1::String b(str2.c_str());
+
+    // Vergleich basierend auf dem Typ
+    switch (typ) {
+        case VergleichsTyp::Kleiner:
+            EXPECT_EQ(a < b, erwartetes_ergebnis);
+            break;
+        case VergleichsTyp::Groesser:
+            EXPECT_EQ(a > b, erwartetes_ergebnis);
+            break;
+        case VergleichsTyp::Gleich:
+            EXPECT_EQ(a == b, erwartetes_ergebnis);
+            break;
+        case VergleichsTyp::KleinerGleich:
+            EXPECT_EQ(a <= b, erwartetes_ergebnis);
+            break;
+        case VergleichsTyp::GroesserGleich:
+            EXPECT_EQ(a >= b, erwartetes_ergebnis);
+            break;
+    }
+}
+
+// Namen für die parametrierten Tests definieren
+struct TestNameGenerator {
+    static std::string GetName(const ::testing::TestParamInfo<std::tuple<std::string, std::string, VergleichsTyp, bool>>& info) {
+        auto [str1, str2, typ, _] = info.param;
+
+        // Vergleichs-Typ in Klartext umwandeln
+        std::string typ_str;
+        switch (typ) {
+            case VergleichsTyp::Kleiner: typ_str = "Kleiner"; break;
+            case VergleichsTyp::Groesser: typ_str = "Groesser"; break;
+            case VergleichsTyp::Gleich: typ_str = "Gleich"; break;
+            case VergleichsTyp::KleinerGleich: typ_str = "KleinerGleich"; break;
+            case VergleichsTyp::GroesserGleich: typ_str = "GroesserGleich"; break;
+        }
+
+        return typ_str + "_" + str1 + "_vs_" + str2;
+    }
+};
+
+// Parameterliste
+INSTANTIATE_TEST_SUITE_P(
+    StringVergleiche,
+    VergleichsTests,
+    ::testing::Values(
+        std::make_tuple("Maria", "Marianne", VergleichsTyp::Kleiner, true),        // Maria < Marianne
+        std::make_tuple("Maria", "Maria", VergleichsTyp::Kleiner, false),          // Maria < Maria
+        std::make_tuple("Maria", "Maria", VergleichsTyp::Gleich, true),            // Maria == Maria
+        std::make_tuple("Marianne", "Maria", VergleichsTyp::Groesser, true),       // Marianne > Maria
+        std::make_tuple("Maria", "Marianne", VergleichsTyp::GroesserGleich, false) // Maria >= Marianne
+    ),
+    TestNameGenerator::GetName // Hier wird der benutzerdefinierte Name gesetzt
+);
+
+
+
+
+
+
 
 
 TEST(Vergleichen, Kleiner) {
@@ -178,11 +259,14 @@ TEST(Console, Input_String_Kleiner_8) {
 TEST(Console, Input_String_Groesser_8) {
     // Beginne mit dem Erfassen der Konsoleneingabe
     std::istringstream iss("MariannenGraben");
+    std::streambuf *buf = iss.rdbuf();
+
 
     _24FSI1::String a;
     iss >> a;
 
     EXPECT_EQ(a, "MariannenGraben");
+
 }
 
 TEST(Console, Input_Int) {
@@ -202,4 +286,3 @@ TEST(Misc, Output_Int_100) {
 
     EXPECT_EQ(b, 100);
 }
-

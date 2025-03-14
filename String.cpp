@@ -351,7 +351,7 @@ namespace _24FSI1 {
         // überladenen operator=(char const *)
         NewStr = tStr;
 
-        // Freigeben des allocierten Speichers
+        // Freigeben des allokierten Speichers
         delete[] tStr;
 
         return is;

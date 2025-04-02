@@ -200,17 +200,17 @@ namespace _24FSI1 {
     }
 
     // region Vergleicher
-    bool String::operator==(String const & NewStr) const{
+    bool operator==(String const & NewStr1, String const & NewStr2) {
         // Direkter Abbruch, wenn die Länge
         // der Strings unterschiedlich ist.
-        if (length != NewStr.length) {
+        if (NewStr1.length != NewStr2.length) {
             return false;
         }
 
         // Zeichenweiser Vergleich der Strings.
         // Abbruch bei dem ersten unterschiedlichen Zeichen.
-        for (int i = 0; i < length; i++) {
-            if (str[i] != NewStr.str[i]) {
+        for (int i = 0; i < NewStr1.length; i++) {
+            if (NewStr1.str[i] != NewStr2.str[i]) {
                 return false;
             }
         }
@@ -221,14 +221,14 @@ namespace _24FSI1 {
         return true;
     }
 
-    bool String::operator!=(String const & NewStr) const {
-        return !(*this == NewStr);
+    bool operator!=(String const & NewStr1, String const & NewStr2) {
+        return !(NewStr1 == NewStr2);
     }
 
-    bool String::operator<(String const & NewStr) const {
-        String s1 = toLower();
-        String s2 = NewStr.toLower();
-        int kuerzeresWortLaenge = length < NewStr.length ? s1.length : s2.length;
+    bool operator<(String const & NewStr1, String const & NewStr2) {
+        String s1 = NewStr1.toLower();
+        String s2 = NewStr2.toLower();
+        int kuerzeresWortLaenge = NewStr1.length < NewStr2.length ? s1.length : s2.length;
 
         for (int i = 0; i < kuerzeresWortLaenge; i++) {
             if (s1.str[i] < s2.str[i]) {
@@ -243,10 +243,10 @@ namespace _24FSI1 {
         return s1.length < s2.length;
     }
 
-    bool String::operator>(String const & NewStr) const {
-        String s1 = toLower();
-        String s2 = NewStr.toLower();
-        int kuerzeresWortLaenge = length < NewStr.length ? s1.length : s2.length;
+    bool operator>(String const & NewStr1, String const & NewStr2) {
+        String s1 = NewStr1.toLower();
+        String s2 = NewStr2.toLower();
+        int kuerzeresWortLaenge = NewStr1.length < NewStr2.length ? s1.length : s2.length;
 
         for (int i = 0; i < kuerzeresWortLaenge; i++) {
             if (s1.str[i] > s2.str[i]) {
@@ -261,12 +261,12 @@ namespace _24FSI1 {
         return s1.length > s2.length;
     }
 
-    bool String::operator<=(String const & NewStr) const {
-        return !(*this > NewStr);
+    bool operator<=(String const & NewStr1, String const & NewStr2) {
+        return !(NewStr1 > NewStr2);
     }
 
-    bool String::operator>=(String const & NewStr) const {
-        return !(*this < NewStr);
+    bool operator>=(String const & NewStr1, String const & NewStr2) {
+        return !(NewStr1 < NewStr2);
     }
 
     // endregion Vergleicher

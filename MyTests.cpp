@@ -1,90 +1,9 @@
 #include "Include/String.h"
 #include <iostream>
 #include "gtest/gtest.h"
-#include <tuple>
-
-// Enum für die Vergleichsoperationen
-enum class VergleichsTyp {
-    Kleiner,
-    Groesser,
-    Gleich,
-    KleinerGleich,
-    GroesserGleich
-};
 
 
-// Test-Fixure mit Parametern
-class VergleichsTests : public ::testing::TestWithParam<std::tuple<std::string, std::string, VergleichsTyp, bool>> {
-};
-
-// Implementierung des Tests
-TEST_P(VergleichsTests, Vergleiche) {
-    auto [str1, str2, typ, erwartetes_ergebnis] = GetParam();
-
-    _24FSI1::String a(str1.c_str());
-    _24FSI1::String b(str2.c_str());
-
-    // Vergleich basierend auf dem Typ
-    switch (typ) {
-        case VergleichsTyp::Kleiner:
-            EXPECT_EQ(a < b, erwartetes_ergebnis);
-            break;
-        case VergleichsTyp::Groesser:
-            EXPECT_EQ(a > b, erwartetes_ergebnis);
-            break;
-        case VergleichsTyp::Gleich:
-            EXPECT_EQ(a == b, erwartetes_ergebnis);
-            break;
-        case VergleichsTyp::KleinerGleich:
-            EXPECT_EQ(a <= b, erwartetes_ergebnis);
-            break;
-        case VergleichsTyp::GroesserGleich:
-            EXPECT_EQ(a >= b, erwartetes_ergebnis);
-            break;
-    }
-}
-
-// Namen für die parametrierten Tests definieren
-struct TestNameGenerator {
-    static std::string GetName(const ::testing::TestParamInfo<std::tuple<std::string, std::string, VergleichsTyp, bool>>& info) {
-        auto [str1, str2, typ, _] = info.param;
-
-        // Vergleichs-Typ in Klartext umwandeln
-        std::string typ_str;
-        switch (typ) {
-            case VergleichsTyp::Kleiner: typ_str = "Kleiner"; break;
-            case VergleichsTyp::Groesser: typ_str = "Groesser"; break;
-            case VergleichsTyp::Gleich: typ_str = "Gleich"; break;
-            case VergleichsTyp::KleinerGleich: typ_str = "KleinerGleich"; break;
-            case VergleichsTyp::GroesserGleich: typ_str = "GroesserGleich"; break;
-        }
-
-        return typ_str + "_" + str1 + "_vs_" + str2;
-    }
-};
-
-// Parameterliste
-INSTANTIATE_TEST_SUITE_P(
-    StringVergleiche,
-    VergleichsTests,
-    ::testing::Values(
-        std::make_tuple("Maria", "Marianne", VergleichsTyp::Kleiner, true),        // Maria < Marianne
-        std::make_tuple("Maria", "Maria", VergleichsTyp::Kleiner, false),          // Maria < Maria
-        std::make_tuple("Maria", "Maria", VergleichsTyp::Gleich, true),            // Maria == Maria
-        std::make_tuple("Marianne", "Maria", VergleichsTyp::Groesser, true),       // Marianne > Maria
-        std::make_tuple("Maria", "Marianne", VergleichsTyp::GroesserGleich, false) // Maria >= Marianne
-    ),
-    TestNameGenerator::GetName // Hier wird der benutzerdefinierte Name gesetzt
-);
-
-
-
-
-
-
-
-
-TEST(Vergleichen, Kleiner) {
+TEST(Vergleichen, String_kleiner_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a < b, true);
@@ -92,7 +11,15 @@ TEST(Vergleichen, Kleiner) {
     EXPECT_EQ(b < a, false);
 }
 
-TEST(Vergleichen, Groesser) {
+TEST(Vergleichen, String_kleiner_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Marianne";
+    EXPECT_EQ(a < b, true);
+    EXPECT_EQ(b < a, false);
+}
+
+
+TEST(Vergleichen, String_Groesser_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a > b, false);
@@ -100,7 +27,14 @@ TEST(Vergleichen, Groesser) {
     EXPECT_EQ(b > a, true);
 }
 
-TEST(Vergleichen, Gleich) {
+TEST(Vergleichen, String_Groesser_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Marianne";
+    EXPECT_EQ(a > b, false);
+    EXPECT_EQ(b > a, true);
+}
+
+TEST(Vergleichen, String_Gleich_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Maria");
     _24FSI1::String c("Marianne");
@@ -108,7 +42,14 @@ TEST(Vergleichen, Gleich) {
     EXPECT_EQ(a == c, false);
 }
 
-TEST(Vergleichen, Kleiner_Gleich) {
+TEST(Vergleichen, String_Gleich_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Maria";
+    EXPECT_EQ(a == b, true);
+    EXPECT_EQ(b == a, true);
+}
+
+TEST(Vergleichen, String_Kleiner_Gleich_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a <= b, true);
@@ -116,11 +57,25 @@ TEST(Vergleichen, Kleiner_Gleich) {
     EXPECT_EQ(b <= a, false);
 }
 
-TEST(Vergleichen, Groesser_Gleich) {
+TEST(Vergleichen, String_Kleiner_Gleich_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Marianne";
+    EXPECT_EQ(a <= b, true);
+    EXPECT_EQ(b <= a, false);
+}
+
+TEST(Vergleichen, String_Groesser_Gleich_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
     EXPECT_EQ(a >= b, false);
     EXPECT_EQ(a >= a, true);
+    EXPECT_EQ(b >= a, true);
+}
+
+TEST(Vergleichen, String_Groesser_Gleich_CharArray) {
+    _24FSI1::String a("Maria");
+    char b[] = "Marianne";
+    EXPECT_EQ(a >= b, false);
     EXPECT_EQ(b >= a, true);
 }
 

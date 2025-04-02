@@ -29,20 +29,20 @@ class _24FSI1::String {
 +operator+=(c: char): String &
 +operator+=(NewStr: char const *): String &
 +operator+=(NewStr: String const &): String &
--- Vergleichende Operatoren --
-+operator==(NewStr: String const &): bool
-+operator!=(NewStr: String const &): bool
-+operator<(NewStr: String const &): bool
-+operator>(NewStr: String const &): bool
-+operator<=(NewStr: String const &): bool
-+operator>=(NewStr: String const &): bool
 -- Methoden --
 +Length(): int
 +c_str(): char *
 +toLower(): String
 +toUpper(): String
 +toInt(): int
--- Friends --
+-- Vergleichende Operatoren --
+{friend} operator==(NewStr1: String const &, NewStr2: String const &): bool
+{friend} operator!=(NewStr1: String const &, NewStr2: String const &): bool
+{friend} operator<(NewStr1: String const &, NewStr2: String const &): bool
+{friend} operator>(NewStr1: String const &, NewStr2: String const &): bool
+{friend} operator<=(NewStr1: String const &, NewStr2: String const &): bool
+{friend} operator>=(NewStr1: String const &, NewStr2: String const &): bool
+-- IOStream --
 {friend} operator<<(std::ostream & os, String const & NewStr) : std::ostream&
 {friend} operator>>(std::istream & is, String & NewStr) : std::istream&
 }

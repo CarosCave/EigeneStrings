@@ -52,13 +52,13 @@ public:
 
     char operator[](int stelle) const;
 
-    // Vergleicher
-    bool operator==(String const & NewStr) const;
-    bool operator!=(String const & NewStr) const;
-    bool operator<(String const & NewStr) const;
-    bool operator>(String const & NewStr) const;
-    bool operator<=(String const & NewStr) const;
-    bool operator>=(String const & NewStr) const;
+    // Vergleicher Friends damit der symetrische Verleich möglich ist
+    friend bool operator==(String const & NewStr1, String const & NewStr2);
+    friend bool operator!=(String const & NewStr1, String const & NewStr2);
+    friend bool operator<(String const & NewStr1, String const & NewStr2);
+    friend bool operator>(String const & NewStr1, String const & NewStr2);
+    friend bool operator<=(String const & NewStr1, String const & NewStr2);
+    friend bool operator>=(String const & NewStr1, String const & NewStr2);
 
     // Methoden
 

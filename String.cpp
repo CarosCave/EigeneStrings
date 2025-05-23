@@ -106,7 +106,7 @@ namespace _24FSI1 {
     // Addiere String += Char
     String & String::operator+=(char const c) {
         // Aufrufen des Konstruktors für ein einzelnes Char
-        String tStr(c);
+        String tStr { c };
 
         return plusGleich(tStr);
     }
@@ -114,7 +114,7 @@ namespace _24FSI1 {
     // Addiere String += Char-Array
     String & String::operator+=(char const * NewStr) {
         // Aufrufen des Konstruktors für ein Char-Array
-        String tStr(NewStr);
+        String tStr { NewStr };
 
         return plusGleich(tStr);
     }
@@ -130,7 +130,7 @@ namespace _24FSI1 {
     // Gibt die Länge des ursprünglichen Char-Arrays zurück
     // Dry-Prinzip (Don't repeat yourself)
     int String::getStringLength(char const * NewStr) {
-        int tLength = 0;
+        int tLength { 0 };
         for (int i = 0; NewStr[i] != '\0'; i++) {
             tLength++;
         }
@@ -140,7 +140,7 @@ namespace _24FSI1 {
     // Eigentliches Addieren ausgelagert.
     // Dry-Prinzip (Don't repeat yourself)
     String String::addiere(String const & NewStr1, String const & NewStr2) {
-        String tStr;
+        String tStr { };
 
         tStr.length = NewStr1.length + NewStr2.length;
         tStr.str = new char[tStr.length + 1];
@@ -162,7 +162,7 @@ namespace _24FSI1 {
     // Plus Gleich ausgelagert
     // Dry-Prinzip (Don't repeat yourself)
     String & String::plusGleich(String const & NewStr) {
-        String temp;
+        String temp { };
         temp = addiere(*this, NewStr);
 
         // Speichern der ursprünglichen Adresse
@@ -290,7 +290,7 @@ namespace _24FSI1 {
     // Gibt einen String zurück, der den
     // gegebenen String in Großbuchstaben umwandelt.
     String String::toUpper() const {
-        String temp(*this);
+        String temp {*this};
 
         for (int i = 0; i < length; i++) {
             if (temp.str[i] >= 'a' && temp.str[i] <= 'z') {
@@ -304,12 +304,39 @@ namespace _24FSI1 {
     // Wenn im String eine Integer Zahl gespeichert ist,
     // dann wird diese als Integer ausgegeben.
     int String::toInt() const {
-        int tInt = 0;
+        // Wenn die Stringlänge 0 ist, dann ist es ein leerer String
+        // und es ist auf gar keinen Fall eine Zahl gespeichert.
+        if (length == 0) {
+            return 0;
+        }
 
-        for (int i = 0; i < length; i++) {
+        int tInt { 0 };
+        int tSign { 1 };
+        int tPos { 0 };
+
+        // Wenn der erste Zeichen ein Minuszeichen ist
+        if (str[0] == '-') {
+            tSign = -1;
+            tPos = 1;
+        }
+        // Wenn das erste Zeichen Positiv ist.
+        else if (str[tPos] == '+') {
+            tPos = 1;
+        }
+
+        // Wenn der erste Zeichen kein Minuszeichen oder + ist,
+        // aber nur ein Zeichen enthalten ist, gibt 0 zurück
+        if (str[0] == '+' || str[0] == '-' && length == 1 ) {
+            return 0;
+        }
+
+        for (int i = tPos; i < length; i++) {
+            if (str[i] < '0' || str[i] > '9') {
+                return 0;
+            }
             tInt = tInt * 10 + str[i] - '0';
         }
-        return tInt;
+        return tInt * tSign;
     }
 
     // Gibt den String auf der Konsole aus.
@@ -321,10 +348,10 @@ namespace _24FSI1 {
     // Liest von der Konsole ein
     std::istream & operator>>(std::istream & is, String & NewStr) {
         char c;
-        int laufvariable = 0;
-        int laenge = 8;
+        int laufvariable {0};
+        int laenge {8};
 
-        char * tStr = new char[laenge];
+        char * tStr {new char[laenge]};
 
         // Liest den Eingabestrom bis ungültige Zeichen laut isspace kommen
         while (is.get(c) && !std::isspace(c)) {
@@ -336,7 +363,7 @@ namespace _24FSI1 {
             // Größe erzeugt und die Daten werden umgeschrieben.
             if (laufvariable == laenge) {
                 laenge *= 2;
-                char * tTemp = new char[laenge];
+                char * tTemp {new char[laenge]};
                 for (int i = 0; i < laufvariable; i++) {
                     tTemp[i] = tStr[i];
                 }

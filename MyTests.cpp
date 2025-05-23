@@ -18,7 +18,6 @@ TEST(Vergleichen, String_kleiner_CharArray) {
     EXPECT_EQ(b < a, false);
 }
 
-
 TEST(Vergleichen, String_Groesser_String) {
     _24FSI1::String a("Maria");
     _24FSI1::String b("Marianne");
@@ -123,10 +122,28 @@ TEST(Misc, Rückgabe_Char_Array) {
     EXPECT_STREQ(c, "Maria");
 }
 
-TEST(Misc, Rückgabe_Integer) {
+TEST(Misc, Rückgabe_Integer_Positiv) {
     _24FSI1::String a("100");
     int b = a.toInt();
     EXPECT_EQ(b, 100);
+}
+
+TEST(Misc, Rückgabe_Integer_Negativ) {
+    _24FSI1::String a("-100");
+    int b = a.toInt();
+    EXPECT_EQ(b, -100);
+}
+
+TEST(Misc, Rückgabe_Integer_Fehler_1) {
+    _24FSI1::String a("A00");
+    int b = a.toInt();
+    EXPECT_EQ(b, 0);
+}
+
+TEST(Misc, Rückgabe_Integer_Fehler_2) {
+    _24FSI1::String a("4A00");
+    int b = a.toInt();
+    EXPECT_EQ(b, 0);
 }
 
 TEST(Misc, Rechnen_mit_zwei_Integer) {

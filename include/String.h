@@ -16,7 +16,7 @@ namespace FSI1 {
 
         String & add_equal(String const & NewStr);
         //void copy_string(char const * const origin, String & destination, std::size_t const length);
-        void copy_string(char const * const origin, char * destination, std::size_t const length);
+        static void copy_string(char const * const origin, char * destination, std::size_t const start_pos, std::size_t const length);
 
         void mem_zero() const;
 
@@ -44,38 +44,38 @@ namespace FSI1 {
         // Operator=
         // String & operator=(char const c);
         // String & operator=(char const * const NewStr);
-        String &operator=(String const &NewStr);
+        String &operator=(String const & NewStr);
 
         // Operator+
         // String operator+(char c) const;
         // String operator+(char const * NewStr) const;
-        String operator+(String const &NewStr) const;
+        String operator+(String const & NewStr) const;
 
         // Operator+=
         // String & operator+=(char c);
         // String & operator+=(char const * NewStr);
-        String &operator+=(String const &NewStr);
+        String &operator+=(String const & NewStr);
 
         char operator[](int position) const;
 
         // Vergleichende Friends, damit der symmetrische Vergleich möglich ist
         // ==
-        friend bool operator==(String const &NewStr1, String const &NewStr2);
+        friend bool operator==(String const & NewStr1, String const & NewStr2);
 
         // !=
-        friend bool operator!=(String const &NewStr1, String const &NewStr2);
+        friend bool operator!=(String const & NewStr1, String const & NewStr2);
 
         // <
-        friend bool operator<(String const &NewStr1, String const &NewStr2);
+        friend bool operator<(String const & NewStr1, String const & NewStr2);
 
         // >
-        friend bool operator>(String const &NewStr1, String const &NewStr2);
+        friend bool operator>(String const & NewStr1, String const & NewStr2);
 
         // <=
-        friend bool operator<=(String const &NewStr1, String const &NewStr2);
+        friend bool operator<=(String const & NewStr1, String const & NewStr2);
 
         // >=
-        friend bool operator>=(String const &NewStr1, String const &NewStr2);
+        friend bool operator>=(String const & NewStr1, String const & NewStr2);
 
 
         // Methoden

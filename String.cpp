@@ -12,7 +12,7 @@ namespace FSI1 {
         m_length = get_string_length(NewStr);
         m_str = new char[m_length + 1];
 
-        copy_string(NewStr, m_str, m_length);
+        copy_string(NewStr, m_str, 0, m_length);
     }
 
     // Legt String aus einem einzelnen Char an.
@@ -21,7 +21,7 @@ namespace FSI1 {
 
     // Kopierkonstruktor
     String::String(String const & NewStr): m_str(new char[NewStr.m_length + 1]), m_length(NewStr.m_length) {
-        copy_string(NewStr.m_str, m_str, m_length);
+        copy_string(NewStr.m_str, m_str, 0 , m_length);
     }
 
     // Destruktor, löscht die Daten und gibt den Speicher wieder frei.
@@ -64,10 +64,9 @@ namespace FSI1 {
 
     // ----------- Private Klassenfunktionen -----------
     // internes Kopieren eines Strings
-    void String::copy_string(char const * const origin, char * destination, std::size_t const length) {
-        // Durch das i ≤ length + 1 wird auch der Terminator \0 mit kopiert
+    void String::copy_string(char const * const origin, char * destination, std::size_t const start_pos, std::size_t const length) {
         for (std::size_t i = 0; i <= length ; i++) {
-            destination[i] = origin[i];
+            destination[i + start_pos] = origin[i];
         }
     }
 
@@ -82,33 +81,30 @@ namespace FSI1 {
     // Gibt die Länge des ursprünglichen Char-Arrays zurück.
     // Dry-Prinzip (Don't repeat yourself)
     int String::get_string_length(char const * NewStr) {
-        int tLength { 0 };
+        int temp_length { 0 };
         for (int i = 0; NewStr[i] != '\0'; i++) {
-            tLength++;
+            temp_length++;
         }
-        return tLength;
+        return temp_length;
     }
 
     // Eigentliches Addieren ausgelagert.
     // Dry-Prinzip (Don't repeat yourself)
     String String::add(String const & NewStr1, String const & NewStr2) {
-        String tStr { };
+        String temp_sting { };
 
-        tStr.m_length = NewStr1.m_length + NewStr2.m_length;
-        tStr.m_str = new char[tStr.m_length + 1];
+        temp_sting.m_length = NewStr1.m_length + NewStr2.m_length;
+        temp_sting.m_str = new char[temp_sting.m_length + 1];
 
-        tStr.mem_zero();
+        temp_sting.mem_zero();
 
         // Erst wird der erste String in den neuen String übertragen
-        for (size_t i = 0; i < NewStr1.m_length; i++) {
-            tStr.m_str[i] = NewStr1.m_str[i];
-        }
+        copy_string(NewStr1.m_str, temp_sting.m_str, 0, NewStr1.m_length);
+
         // Anschließend wird der zweite String direkt hinten angehängt.
-        for (size_t i = 0; i < NewStr2.m_length; i++) {
-            tStr.m_str[i + NewStr1.m_length] = NewStr2.m_str[i];
-        }
-        tStr.m_str[tStr.m_length] = '\0';
-        return tStr;
+        copy_string(NewStr2.m_str, temp_sting.m_str, NewStr1.m_length, NewStr2.m_length);
+
+        return temp_sting;
     }
 
     // Plus Gleich ausgelagert

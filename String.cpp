@@ -1,135 +1,87 @@
-#include "Include/String.h"
+#include "include/String.h"
 
-namespace _24FSI1 {
+namespace FSI1 {
 
     // Konstruktoren
-    // Legt leeren String an
-    String::String() : str(new char[1]), length(0) {
-        str[0] = '\0';
+    // Legt einen leeren String an und terminiert ihn.
+    String::String() : m_str(new char[1] { '\0'} ), m_length(0) {
     }
 
-    // Legt String an und weisst ihm einen String zu
-    String::String(char const * NewStr): length(0) {
+    // Legt String an und weist ihm einen String zu
+    String::String(char const * const NewStr): m_length(0) {
+        m_length = get_string_length(NewStr);
+        m_str = new char[m_length + 1];
 
-        length = getStringLength(NewStr);
-
-        str = new char[length + 1];
-
-        for (int i = 0; i < length; i++) {
-            str[i] = NewStr[i];
-        }
-        str[length] = '\0';
+        copy_string(NewStr, m_str, m_length);
     }
 
     // Legt String aus einem einzelnen Char an.
-    String::String(char const c): str(new char[2]), length(1) {
-        str[0] = c;
-        str[1] = '\0';
+    String::String(char const c): m_str{ new char[2] {c, '\n'} }, m_length(1) {
     }
 
     // Kopierkonstruktor
-    String::String(String const & NewStr): length(NewStr.length), str(new char[NewStr.length + 1]) {
-        for (int i = 0; i < length; i++) {
-            str[i] = NewStr.str[i];
-        }
-        str[length] = '\0';
+    String::String(String const & NewStr): m_str(new char[NewStr.m_length + 1]), m_length(NewStr.m_length) {
+        copy_string(NewStr.m_str, m_str, m_length);
     }
 
     // Destruktor, löscht die Daten und gibt den Speicher wieder frei.
-    // Da ich mit new Speicher alloziiere, muss ich
+    // Da ich mit new Speicher alloziere, muss ich
     // zwingend den Heap mit delete[] zurückgeben.
     String::~String() {
-        delete[] str;
+        delete[] m_str;
     }
 
     // Operatoren
-    // #region Zuweisungsoperator
-    // String = Char
-    void String::operator=(char const c) {
-        if (str != nullptr) {
-            delete[] str;
-        }
-        str = new char[2];
-        str[0] = c;
-        length = 1;
-        str[1] = '\0';
-    }
-
-    // String = Char-Array
-    void String::operator=(char const * NewStr) {
-        delete[] str;
-        length = getStringLength(NewStr);
-        str = new char[length + 1];
-        for (int i = 0; i < length; i++) {
-            str[i] = NewStr[i];
-        }
-        str[length] = '\0';
-    }
-
+    // ----------- Zuweisungsoperator -----------
     // String = String
-    void String::operator=(String const & NewStr) {
-        length = NewStr.length;
-        delete[] str;
-        str = new char[length + 1];
+    String & String::operator=(String const & NewStr) {
+        m_length = NewStr.m_length;
+        delete[] m_str;
+        m_str = new char[m_length + 1];
 
-        for (int i = 0; i < length; i++) {
-            str[i] = NewStr.str[i];
+        for (size_t i = 0; i < m_length; i++) {
+            m_str[i] = NewStr.m_str[i];
         }
-        str[length] = '\0';
+        m_str[m_length] = '\0';
+        return *this;
     }
 
-    // #endregion Zuweisungsoperator
+    // ----------- Zuweisungsoperator -----------
 
-    // region Operator+
-    // Addiere String + Char
-    String String::operator+(char const c) const {
-        String tStr(c);
-
-        return addiere(*this, tStr);
-    }
-
-    // Addiere String + Char[]
-    String String::operator+(char const * NewStr) const {
-        String tStr(NewStr);
-
-        return addiere(*this, tStr);
-    }
-
-    // Addiere String + String
+    // ----------- Operator+ -----------
     String String::operator+(String const & NewStr) const {
-        return addiere(str, NewStr);
+        return add( String{ m_str }, NewStr);
     }
 
-    // endregion Operator+
+    // ----------- Operator+ -----------
 
-    // region Operator+=
-    // Addiere String += Char
-    String & String::operator+=(char const c) {
-        // Aufrufen des Konstruktors für ein einzelnes Char
-        String tStr { c };
-
-        return plusGleich(tStr);
-    }
-
-    // Addiere String += Char-Array
-    String & String::operator+=(char const * NewStr) {
-        // Aufrufen des Konstruktors für ein Char-Array
-        String tStr { NewStr };
-
-        return plusGleich(tStr);
-    }
-
-    // Addiere String += String
+    // ----------- Operator+= -----------
     String & String::operator+=(String const & NewStr) {
-        return plusGleich(NewStr);
+        return add_equal(NewStr);
     }
 
-    // endregion Operator+=
+    // ----------- Operator+= -----------
 
-    // region Private Klassenfunktionen
-    // Gibt die Länge des ursprünglichen Char-Arrays zurück
+    // ----------- Private Klassenfunktionen -----------
+    // internes Kopieren eines Strings
+    void String::copy_string(char const * const origin, char * destination, std::size_t const length) {
+        // Durch das i ≤ length + 1 wird auch der Terminator \0 mit kopiert
+        for (std::size_t i = 0; i <= length ; i++) {
+            destination[i] = origin[i];
+        }
+    }
+
+    // void String::copy_string(String const & origin, String & destination, std::size_t const length) {
+    //     // Durch das i ≤ length + 1 wird auch der Terminator \0 mit kopiert
+    //     for (std::size_t i = 0; i <= length + 1; i++) {
+    //         destination.m_str[i] = origin.m_str[i];
+    //     }
+    //     destination.m_length = length;
+    // }
+
+    // Gibt die Länge des ursprünglichen Char-Arrays zurück.
     // Dry-Prinzip (Don't repeat yourself)
-    int String::getStringLength(char const * NewStr) {
+    int String::get_string_length(char const * NewStr) {
         int tLength { 0 };
         for (int i = 0; NewStr[i] != '\0'; i++) {
             tLength++;
@@ -139,78 +91,78 @@ namespace _24FSI1 {
 
     // Eigentliches Addieren ausgelagert.
     // Dry-Prinzip (Don't repeat yourself)
-    String String::addiere(String const & NewStr1, String const & NewStr2) {
+    String String::add(String const & NewStr1, String const & NewStr2) {
         String tStr { };
 
-        tStr.length = NewStr1.length + NewStr2.length;
-        tStr.str = new char[tStr.length + 1];
+        tStr.m_length = NewStr1.m_length + NewStr2.m_length;
+        tStr.m_str = new char[tStr.m_length + 1];
 
-        tStr.memZero();
+        tStr.mem_zero();
 
         // Erst wird der erste String in den neuen String übertragen
-        for (int i = 0; i < NewStr1.length; i++) {
-            tStr.str[i] = NewStr1.str[i];
+        for (size_t i = 0; i < NewStr1.m_length; i++) {
+            tStr.m_str[i] = NewStr1.m_str[i];
         }
-        // Anschließend wird der zweite String direkt hinten angehangen
-        for (int i = 0; i < NewStr2.length; i++) {
-            tStr.str[i + NewStr1.length] = NewStr2.str[i];
+        // Anschließend wird der zweite String direkt hinten angehängt.
+        for (size_t i = 0; i < NewStr2.m_length; i++) {
+            tStr.m_str[i + NewStr1.m_length] = NewStr2.m_str[i];
         }
-        tStr.str[tStr.length] = '\0';
+        tStr.m_str[tStr.m_length] = '\0';
         return tStr;
     }
 
     // Plus Gleich ausgelagert
     // Dry-Prinzip (Don't repeat yourself)
-    String & String::plusGleich(String const & NewStr) {
+    String & String::add_equal(String const & NewStr) {
         String temp { };
-        temp = addiere(*this, NewStr);
+        temp = add(*this, NewStr);
 
         // Speichern der ursprünglichen Adresse
-        char * tPointer = str;
+        char * tPointer = m_str;
 
         // Übertragen des neuen Speichers
-        str = temp.str;
-        length = temp.length;
+        m_str = temp.m_str;
+        m_length = temp.m_length;
 
         // Setze den Temp-String-Zeiger auf tPointer,
         // damit sichergestellt wird, dass der
         // Destruktor die richtige Adresse freigibt.
-        temp.str = tPointer;
+        temp.m_str = tPointer;
 
         return *this;
     }
 
     // Eigenes MemZero implementiert.
     // Schreibt \0 in den angelegten Speicher
-    void String::memZero() const {
-        for (int i = 0; i < length + 1; i++) {
-            str[i] = '\0';
+    void String::mem_zero() const {
+        for (size_t i = 0; i < m_length + 1; i++) {
+            m_str[i] = '\0';
         }
     }
 
-    // endregion Private Klassenfunktionen
+    // ----------- Private Klassenfunktionen -----------
 
-    char String::operator[](int const stelle) const {
-        if (stelle >= 0 && stelle <= length) {
-            return str[stelle];
+    char String::operator[](int const position) const {
+        if (position >= 0 && position <= m_length) {
+            return m_str[position];
         }
         else {
             std::__throw_length_error("Index out of range.");
         }
     }
 
-    // region Vergleicher
+    // ----------- Vergleicher -----------
     bool operator==(String const & NewStr1, String const & NewStr2) {
         // Direkter Abbruch, wenn die Länge
         // der Strings unterschiedlich ist.
-        if (NewStr1.length != NewStr2.length) {
+        if (NewStr1.m_length != NewStr2.m_length) {
             return false;
         }
 
         // Zeichenweiser Vergleich der Strings.
         // Abbruch bei dem ersten unterschiedlichen Zeichen.
-        for (int i = 0; i < NewStr1.length; i++) {
-            if (NewStr1.str[i] != NewStr2.str[i]) {
+        for (size_t i = 0; i < NewStr1.m_length; i++) {
+            if (NewStr1.m_str[i] != NewStr2.m_str[i]) {
                 return false;
             }
         }
@@ -226,39 +178,39 @@ namespace _24FSI1 {
     }
 
     bool operator<(String const & NewStr1, String const & NewStr2) {
-        String s1 = NewStr1.toLower();
-        String s2 = NewStr2.toLower();
-        int kuerzeresWortLaenge = NewStr1.length < NewStr2.length ? s1.length : s2.length;
+        String s1 = NewStr1.to_lower();
+        String s2 = NewStr2.to_lower();
+        auto shorter_word_length = NewStr1.m_length < NewStr2.m_length ? s1.m_length : s2.m_length;
 
-        for (int i = 0; i < kuerzeresWortLaenge; i++) {
-            if (s1.str[i] < s2.str[i]) {
+        for (std::size_t i = 0; i < shorter_word_length; i++) {
+            if (s1.m_str[i] < s2.m_str[i]) {
                 return true;
-            } else if (s1.str[i] > s2.str[i]) {
+            } else if (s1.m_str[i] > s2.m_str[i]) {
                 return false;
             }
         }
 
         // Wenn alle verglichenen Zeichen gleich sind,
         // entscheidet die Länge des Strings.
-        return s1.length < s2.length;
+        return s1.m_length < s2.m_length;
     }
 
     bool operator>(String const & NewStr1, String const & NewStr2) {
-        String s1 = NewStr1.toLower();
-        String s2 = NewStr2.toLower();
-        int kuerzeresWortLaenge = NewStr1.length < NewStr2.length ? s1.length : s2.length;
+        String s1 = NewStr1.to_lower();
+        String s2 = NewStr2.to_lower();
+        auto shorter_word_length = NewStr1.m_length < NewStr2.m_length ? s1.m_length : s2.m_length;
 
-        for (int i = 0; i < kuerzeresWortLaenge; i++) {
-            if (s1.str[i] > s2.str[i]) {
+        for (size_t i = 0; i < shorter_word_length; i++) {
+            if (s1.m_str[i] > s2.m_str[i]) {
                 return true;
-            } else if (s1.str[i] < s2.str[i]) {
+            } else if (s1.m_str[i] < s2.m_str[i]) {
                 return false;
             }
         }
 
         // Wenn alle verglichenen Zeichen gleich sind,
         // entscheidet die Länge des Strings.
-        return s1.length > s2.length;
+        return s1.m_length > s2.m_length;
     }
 
     bool operator<=(String const & NewStr1, String const & NewStr2) {
@@ -269,18 +221,18 @@ namespace _24FSI1 {
         return !(NewStr1 < NewStr2);
     }
 
-    // endregion Vergleicher
+    // ----------- Vergleicher -----------
 
     // Klassen-Methoden
 
     // Gibt einen String zurück, der den
     // gegebenen String in Kleinbuchstaben umwandelt.
-    String String::toLower() const {
+    String String::to_lower() const {
         String temp(*this);
 
-        for (int i = 0; i < length; i++) {
-            if (temp.str[i] >= 'A' && temp.str[i] <= 'Z') {
-                temp.str[i] = temp.str[i] + ('a' - 'A');
+        for (size_t i = 0; i < m_length; i++) {
+            if (temp.m_str[i] >= 'A' && temp.m_str[i] <= 'Z') {
+                temp.m_str[i] = temp.m_str[i] + ('a' - 'A');
             }
         }
 
@@ -289,24 +241,24 @@ namespace _24FSI1 {
 
     // Gibt einen String zurück, der den
     // gegebenen String in Großbuchstaben umwandelt.
-    String String::toUpper() const {
+    String String::to_upper() const {
         String temp {*this};
 
-        for (int i = 0; i < length; i++) {
-            if (temp.str[i] >= 'a' && temp.str[i] <= 'z') {
-                temp.str[i] = temp.str[i] - ('a' - 'A');
+        for (size_t i = 0; i < m_length; i++) {
+            if (temp.m_str[i] >= 'a' && temp.m_str[i] <= 'z') {
+                temp.m_str[i] = temp.m_str[i] - ('a' - 'A');
             }
         }
 
         return temp;
     }
 
-    // Wenn im String eine Integer Zahl gespeichert ist,
-    // dann wird diese als Integer ausgegeben.
-    int String::toInt() const {
-        // Wenn die Stringlänge 0 ist, dann ist es ein leerer String
+    // Wenn im String eine Integer-Zahl gespeichert ist,
+    // wird diese als Integer ausgegeben.
+    int String::to_int() const {
+        // Wenn die Stringlänge 0 ist, ist es ein leerer String
         // und es ist auf gar keinen Fall eine Zahl gespeichert.
-        if (length == 0) {
+        if (m_length == 0) {
             return 0;
         }
 
@@ -314,34 +266,34 @@ namespace _24FSI1 {
         int tSign { 1 };
         int tPos { 0 };
 
-        // Wenn der erste Zeichen ein Minuszeichen ist
-        if (str[0] == '-') {
+        // Wenn das erste Zeichen ein Minuszeichen ist.
+        if (m_str[0] == '-') {
             tSign = -1;
             tPos = 1;
         }
         // Wenn das erste Zeichen Positiv ist.
-        else if (str[tPos] == '+') {
+        else if (m_str[tPos] == '+') {
             tPos = 1;
         }
 
-        // Wenn der erste Zeichen kein Minuszeichen oder + ist,
+        // Wenn das erste Zeichen kein Minuszeichen oder + ist,
         // aber nur ein Zeichen enthalten ist, gibt 0 zurück
-        if (str[0] == '+' || str[0] == '-' && length == 1 ) {
+        if (m_str[0] == '+' || m_str[0] == '-' && m_length == 1 ) {
             return 0;
         }
 
-        for (int i = tPos; i < length; i++) {
-            if (str[i] < '0' || str[i] > '9') {
+        for (int i = tPos; i < m_length; i++) {
+            if (m_str[i] < '0' || m_str[i] > '9') {
                 return 0;
             }
-            tInt = tInt * 10 + str[i] - '0';
+            tInt = tInt * 10 + m_str[i] - '0';
         }
         return tInt * tSign;
     }
 
     // Gibt den String auf der Konsole aus.
     std::ostream & operator<<(std::ostream & os, String const & NewStr) {
-        os << NewStr.str;
+        os << NewStr.m_str;
         return os;
     }
 
@@ -349,21 +301,21 @@ namespace _24FSI1 {
     std::istream & operator>>(std::istream & is, String & NewStr) {
         char c;
         int laufvariable {0};
-        int laenge {8};
+        int temp_length {8};
 
-        char * tStr {new char[laenge]};
+        char * tStr {new char[temp_length]};
 
-        // Liest den Eingabestrom bis ungültige Zeichen laut isspace kommen
+        // Liest den Eingabestrom, bis ungültige Zeichen laut isspace kommen
         while (is.get(c) && !std::isspace(c)) {
             tStr[laufvariable] = c;
             laufvariable++;
 
             // Wenn die festgelegte Länge des Temp-Strings gleich
-            // der Laufvariablen sind, wird ein neues Array doppelter
+            // der Laufvariable ist, wird ein neues Array doppelter
             // Größe erzeugt und die Daten werden umgeschrieben.
-            if (laufvariable == laenge) {
-                laenge *= 2;
-                char * tTemp {new char[laenge]};
+            if (laufvariable == temp_length) {
+                temp_length *= 2;
+                char * tTemp {new char[temp_length]};
                 for (int i = 0; i < laufvariable; i++) {
                     tTemp[i] = tStr[i];
                 }
@@ -376,11 +328,11 @@ namespace _24FSI1 {
 
         // Übergeben des eingelesenen Strings mittels des
         // überladenen operator=(char const *)
-        NewStr = tStr;
+        NewStr = String { tStr };
 
         // Freigeben des allokierten Speichers
         delete[] tStr;
 
         return is;
     }
-} // _24FSI1
+} // FSI1

@@ -1,10 +1,10 @@
 @startuml
 'https://plantuml.com/class-diagram
 set namespaceSeparator ::
-class _24FSI1::String {
--str: char *
--length: int
--- Interne Methoden --
+class FSI1::String {
+-m_str: char *
+-m_length: int
+-- Member Funktionen --
 -getStringLength(NewStr: char const *): int
 -{static}addiere(NewStr1: String const &, NewStr2: String const &): String
 -plusGleich(NewStr: String &): String

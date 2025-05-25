@@ -2,85 +2,105 @@
 #define STRING_H
 #include <iostream>
 
-namespace _24FSI1 {
 
-class String {
-private:
-    char * str;
-    int length;
+// Kein _24 im Namespace, da dies laut Standard nicht OK ist.
+namespace FSI1 {
+    class String {
+    private:
+        char * m_str; // Data
+        std::size_t m_length; // Größe
 
-    int getStringLength(char const * NewStr);
-    String static addiere(String const & NewStr1, String const & NewStr2);
-    String & plusGleich(String const & NewStr);
-    void memZero() const;
+        static int get_string_length(char const * NewStr);
 
-public:
-    // Konstruktoren und Destruktoren
-    // Standardkonstruktor
-    String();
+        static String add(String const & NewStr1, String const & NewStr2);
 
-    // Erlaub implizierte Typkonvertierungen
-    // für String s = "Test";
-    // oder String t("Test");
-    String(char const * NewStr);
+        String & add_equal(String const & NewStr);
+        //void copy_string(char const * const origin, String & destination, std::size_t const length);
+        void copy_string(char const * const origin, char * destination, std::size_t const length);
 
-    // Konstruktor baut aus einzelnem Char ein String
-    String(char const c);
+        void mem_zero() const;
 
-    // Kopierkonstruktor, stellt sicher, dass die Strings
-    // korrekt kopiert werden und es keine Speicherprobleme gibt
-    String(String const & NewStr);
+    public:
+        // Konstruktoren und Destruktoren
+        // Standardkonstruktor
+        String();
 
-    // Destruktor
-    ~String();
+        // Erlaubt implizierte Typkonvertierungen
+        // für String s = "Test";
+        // oder String t("Test");
+        String(char const *const NewStr);
 
-    // Operatoren
-    // Operator=
-    void operator=(char const c);
-    void operator=(char const * NewStr);
-    void operator=(String const & NewStr);
+        // Konstruktor baut aus einzelnem Char ein String
+        String(char const c);
 
-    // Operator+
-    String operator+(char c) const;
-    String operator+(char const * NewStr) const;
-    String operator+(String const & NewStr) const;
+        // Kopierkonstruktor stellt sicher, dass die Strings
+        // korrekt kopiert werden und es keine Speicherprobleme gibt
+        String(String const &NewStr);
 
-    // Operator+=
-    String & operator+=(char c);
-    String & operator+=(char const * NewStr);
-    String & operator+=(String const & NewStr);
+        // Destruktor
+        ~String();
 
-    char operator[](int stelle) const;
+        // Operatoren
+        // Operator=
+        // String & operator=(char const c);
+        // String & operator=(char const * const NewStr);
+        String &operator=(String const &NewStr);
 
-    // Vergleicher Friends damit der symetrische Verleich möglich ist
-    friend bool operator==(String const & NewStr1, String const & NewStr2);
-    friend bool operator!=(String const & NewStr1, String const & NewStr2);
-    friend bool operator<(String const & NewStr1, String const & NewStr2);
-    friend bool operator>(String const & NewStr1, String const & NewStr2);
-    friend bool operator<=(String const & NewStr1, String const & NewStr2);
-    friend bool operator>=(String const & NewStr1, String const & NewStr2);
+        // Operator+
+        // String operator+(char c) const;
+        // String operator+(char const * NewStr) const;
+        String operator+(String const &NewStr) const;
 
-    // Methoden
+        // Operator+=
+        // String & operator+=(char c);
+        // String & operator+=(char const * NewStr);
+        String &operator+=(String const &NewStr);
 
-    String toLower() const;
-    String toUpper() const;
-    int toInt() const;
+        char operator[](int position) const;
 
-    // Inline-Methoden
-    // Rückgabe der Stringlänge
-    int Length() {
-        return length;
-    }
+        // Vergleichende Friends, damit der symmetrische Vergleich möglich ist
+        // ==
+        friend bool operator==(String const &NewStr1, String const &NewStr2);
 
-    // Rückgabe als Char-Array
-    [[nodiscard]] char * c_str() const {
-        return str;
-    }
+        // !=
+        friend bool operator!=(String const &NewStr1, String const &NewStr2);
 
-    friend std::ostream & operator<<(std::ostream & os, String const & NewStr);
-    friend std::istream & operator>>(std::istream & is, String & NewStr);
-};
+        // <
+        friend bool operator<(String const &NewStr1, String const &NewStr2);
 
-} // _24FSI1
+        // >
+        friend bool operator>(String const &NewStr1, String const &NewStr2);
+
+        // <=
+        friend bool operator<=(String const &NewStr1, String const &NewStr2);
+
+        // >=
+        friend bool operator>=(String const &NewStr1, String const &NewStr2);
+
+
+        // Methoden
+
+        [[nodiscard]] String to_lower() const;
+
+        [[nodiscard]] String to_upper() const;
+
+        [[nodiscard]] int to_int() const;
+
+        // Inline-Methoden
+        // Rückgabe der Stringlänge
+        [[nodiscard]] size_t length() const {
+            return m_length;
+        }
+
+        // Rückgabe als Char-Array
+        [[nodiscard]] char *c_str() const {
+            return m_str;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, String const &NewStr);
+
+        friend std::istream &operator>>(std::istream &is, String &NewStr);
+    };
+} // FSI1
 
 #endif //STRING_H

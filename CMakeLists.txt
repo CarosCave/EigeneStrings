@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(EigeneStrings main.cpp
         String.cpp
-        Include/String.h
+        include/String.h
         MyTests.cpp)
 
 # Extra Flags für Speicherfehler

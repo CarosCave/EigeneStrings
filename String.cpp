@@ -1,7 +1,6 @@
 #include "include/String.h"
 
 namespace FSI1 {
-
     // Konstruktoren
     // Legt einen leeren String an und terminiert ihn.
     String::String() : m_str(new char[1] { '\0'} ), m_length(0) {
@@ -35,14 +34,15 @@ namespace FSI1 {
     // ----------- Zuweisungsoperator -----------
     // String = String
     String & String::operator=(String const & NewStr) {
+        // Verhindern von Selbstzuweisung.
+        if (this == &NewStr) {
+            return *this;
+        }
         m_length = NewStr.m_length;
         delete[] m_str;
         m_str = new char[m_length + 1];
 
-        for (size_t i = 0; i < m_length; i++) {
-            m_str[i] = NewStr.m_str[i];
-        }
-        m_str[m_length] = '\0';
+        copy_string(NewStr.m_str, m_str, 0, m_length);
         return *this;
     }
 
@@ -50,14 +50,29 @@ namespace FSI1 {
 
     // ----------- Operator+ -----------
     String String::operator+(String const & NewStr) const {
-        return add( String{ m_str }, NewStr);
+        String temp_sting;
+
+        temp_sting.m_length = NewStr.m_length + m_length;
+        temp_sting.m_str = new char[temp_sting.m_length + 1];
+
+        temp_sting.mem_zero();
+
+        // Erst wird der erste String in den neuen String übertragen
+        copy_string(m_str, temp_sting.m_str, 0, m_length);
+
+        // Anschließend wird der zweite String direkt hinten angehängt.
+        copy_string(NewStr.m_str, temp_sting.m_str, m_length, NewStr.m_length);
+
+        return temp_sting;
     }
 
     // ----------- Operator+ -----------
 
     // ----------- Operator+= -----------
     String & String::operator+=(String const & NewStr) {
-        return add_equal(NewStr);
+        *this = *this + NewStr;
+        return *this;
+        //return add_equal(NewStr);
     }
 
     // ----------- Operator+= -----------
@@ -70,62 +85,14 @@ namespace FSI1 {
         }
     }
 
-    // void String::copy_string(String const & origin, String & destination, std::size_t const length) {
-    //     // Durch das i ≤ length + 1 wird auch der Terminator \0 mit kopiert
-    //     for (std::size_t i = 0; i <= length + 1; i++) {
-    //         destination.m_str[i] = origin.m_str[i];
-    //     }
-    //     destination.m_length = length;
-    // }
-
     // Gibt die Länge des ursprünglichen Char-Arrays zurück.
     // Dry-Prinzip (Don't repeat yourself)
-    int String::get_string_length(char const * NewStr) {
+    std::size_t String::get_string_length(char const * NewStr) {
         int temp_length { 0 };
         for (int i = 0; NewStr[i] != '\0'; i++) {
             temp_length++;
         }
         return temp_length;
-    }
-
-    // Eigentliches Addieren ausgelagert.
-    // Dry-Prinzip (Don't repeat yourself)
-    String String::add(String const & NewStr1, String const & NewStr2) {
-        String temp_sting { };
-
-        temp_sting.m_length = NewStr1.m_length + NewStr2.m_length;
-        temp_sting.m_str = new char[temp_sting.m_length + 1];
-
-        temp_sting.mem_zero();
-
-        // Erst wird der erste String in den neuen String übertragen
-        copy_string(NewStr1.m_str, temp_sting.m_str, 0, NewStr1.m_length);
-
-        // Anschließend wird der zweite String direkt hinten angehängt.
-        copy_string(NewStr2.m_str, temp_sting.m_str, NewStr1.m_length, NewStr2.m_length);
-
-        return temp_sting;
-    }
-
-    // Plus Gleich ausgelagert
-    // Dry-Prinzip (Don't repeat yourself)
-    String & String::add_equal(String const & NewStr) {
-        String temp { };
-        temp = add(*this, NewStr);
-
-        // Speichern der ursprünglichen Adresse
-        char * tPointer = m_str;
-
-        // Übertragen des neuen Speichers
-        m_str = temp.m_str;
-        m_length = temp.m_length;
-
-        // Setze den Temp-String-Zeiger auf tPointer,
-        // damit sichergestellt wird, dass der
-        // Destruktor die richtige Adresse freigibt.
-        temp.m_str = tPointer;
-
-        return *this;
     }
 
     // Eigenes MemZero implementiert.
@@ -231,7 +198,6 @@ namespace FSI1 {
                 temp.m_str[i] = temp.m_str[i] + ('a' - 'A');
             }
         }
-
         return temp;
     }
 
@@ -245,7 +211,6 @@ namespace FSI1 {
                 temp.m_str[i] = temp.m_str[i] - ('a' - 'A');
             }
         }
-
         return temp;
     }
 
@@ -255,36 +220,36 @@ namespace FSI1 {
         // Wenn die Stringlänge 0 ist, ist es ein leerer String
         // und es ist auf gar keinen Fall eine Zahl gespeichert.
         if (m_length == 0) {
-            return 0;
+            throw std::invalid_argument("String is empty, cannot convert to int.\n");
         }
 
-        int tInt { 0 };
-        int tSign { 1 };
-        int tPos { 0 };
+        int temp_int { 0 };
+        int temp_sign { 1 };
+        int temp_pos { 0 };
 
-        // Wenn das erste Zeichen ein Minuszeichen ist.
+        // Erste Zeichen Minus?
         if (m_str[0] == '-') {
-            tSign = -1;
-            tPos = 1;
+            temp_sign = -1;
+            temp_pos = 1;
         }
-        // Wenn das erste Zeichen Positiv ist.
-        else if (m_str[tPos] == '+') {
-            tPos = 1;
-        }
-
-        // Wenn das erste Zeichen kein Minuszeichen oder + ist,
-        // aber nur ein Zeichen enthalten ist, gibt 0 zurück
-        if (m_str[0] == '+' || m_str[0] == '-' && m_length == 1 ) {
-            return 0;
+        // Erste Zeichen Plus?
+        else if (m_str[temp_pos] == '+') {
+            temp_pos = 1;
         }
 
-        for (int i = tPos; i < m_length; i++) {
+        // Wenn das erste Zeichen weder + noch -,
+        // aber nur ein Zeichen enthalten ist.
+        if ((m_str[0] == '+' || m_str[0] == '-') && m_length == 1 ) {
+            throw std::invalid_argument("String is not an integer, cannot convert to int.");
+        }
+
+        for (int i = temp_pos; i < m_length; i++) {
             if (m_str[i] < '0' || m_str[i] > '9') {
-                return 0;
+                throw std::invalid_argument("String is not an integer, cannot convert to int.");
             }
-            tInt = tInt * 10 + m_str[i] - '0';
+            temp_int = temp_int * 10 + m_str[i] - '0';
         }
-        return tInt * tSign;
+        return temp_int * temp_sign;
     }
 
     // Gibt den String auf der Konsole aus.
@@ -296,38 +261,38 @@ namespace FSI1 {
     // Liest von der Konsole ein
     std::istream & operator>>(std::istream & is, String & NewStr) {
         char c;
-        int laufvariable {0};
+        int iterator {0};
         int temp_length {8};
 
-        char * tStr {new char[temp_length]};
+        char * temp_string {new char[temp_length]};
 
         // Liest den Eingabestrom, bis ungültige Zeichen laut isspace kommen
         while (is.get(c) && !std::isspace(c)) {
-            tStr[laufvariable] = c;
-            laufvariable++;
+            temp_string[iterator] = c;
+            iterator++;
 
             // Wenn die festgelegte Länge des Temp-Strings gleich
             // der Laufvariable ist, wird ein neues Array doppelter
             // Größe erzeugt und die Daten werden umgeschrieben.
-            if (laufvariable == temp_length) {
+            if (iterator == temp_length) {
                 temp_length *= 2;
-                char * tTemp {new char[temp_length]};
-                for (int i = 0; i < laufvariable; i++) {
-                    tTemp[i] = tStr[i];
-                }
-                delete[] tStr;
-                tStr = tTemp;
+                char * temp_copy_string {new char[temp_length]};
+
+                String::copy_string(temp_string, temp_copy_string, 0, iterator );
+
+                delete[] temp_string;
+                temp_string = temp_copy_string;
             }
         }
         // Terminieren des fertig eingelesenen Strings
-        tStr[laufvariable] = '\0';
+        temp_string[iterator] = '\0';
 
         // Übergeben des eingelesenen Strings mittels des
         // überladenen operator=(char const *)
-        NewStr = String { tStr };
+        NewStr = String { temp_string };
 
         // Freigeben des allokierten Speichers
-        delete[] tStr;
+        delete[] temp_string;
 
         return is;
     }

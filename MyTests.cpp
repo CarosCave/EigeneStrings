@@ -136,14 +136,12 @@ TEST(Misc, Rückgabe_Integer_Negativ) {
 
 TEST(Misc, Rückgabe_Integer_Fehler_1) {
     FSI1::String a("A00");
-    int b = a.to_int();
-    EXPECT_EQ(b, 0);
+    EXPECT_THROW(a.to_int(), std::invalid_argument);
 }
 
 TEST(Misc, Rückgabe_Integer_Fehler_2) {
     FSI1::String a("4A00");
-    int b = a.to_int();
-    EXPECT_EQ(b, 0);
+    EXPECT_THROW(a.to_int(), std::invalid_argument);
 }
 
 TEST(Misc, Rechnen_mit_zwei_Integer) {

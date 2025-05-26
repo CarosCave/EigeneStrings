@@ -3,38 +3,31 @@
 set namespaceSeparator ::
 class FSI1::String {
 -m_str: char *
--m_length: int
+-m_length: std::size_t
 -- Member Funktionen --
--getStringLength(NewStr: char const *): int
--{static}addiere(NewStr1: String const &, NewStr2: String const &): String
--plusGleich(NewStr: String &): String
 -memZero(): void
+-{static}get_string_length(NewStr: char const *): std::size_t
+-{static}addiere(NewStr1: String const &, NewStr2: String const &): String
 -- Konstruktoren und Destruktoren --
 +String()
 +String(c: char)
-+String(NewStr: char const *)
++String(NewStr: char const * const)
 +String(NewStr: String const &)
 +~String
 -- Operatoren --
-+operator[](i: int): char
++operator[](i: int): char const
 -- Operatoren = --
-+operator=(c: char): void
-+operator=(NewStr: char const *): void
-+operator=(NewStr: String const &): void
++operator=(NewStr: String const &): String &
 -- Operatoren + --
-+operator+(c: char): String
-+operator+(NewStr: char const *): String
-+operator+(NewStr: String const &): String
++operator+(NewStr: String const &): String const
 -- Operatoren += --
-+operator+=(c: char): String &
-+operator+=(NewStr: char const *): String &
 +operator+=(NewStr: String const &): String &
 -- Methoden --
-+Length(): int
-+c_str(): char *
-+toLower(): String
-+toUpper(): String
-+toInt(): int
++«nodiscard» to_lower(): String const
++«nodiscard» to_upper(): String const
++«nodiscard» to_int(): int const
++«nodiscard» length(): std::size_t const
++«nodiscard» c_str(): char *
 -- Vergleichende Operatoren --
 {friend} operator==(NewStr1: String const &, NewStr2: String const &): bool
 {friend} operator!=(NewStr1: String const &, NewStr2: String const &): bool
